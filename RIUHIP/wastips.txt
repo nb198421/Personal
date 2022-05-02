@@ -1,0 +1,390 @@
+print AdminControl.queryNames('cell= ENT-DV-UHAPP05Cell01,node=ENT-DV-UHAPP05Node01,type=ApplicationManager,process=HIX-MODEV,*')
+#############################################################################################################################################
+#                                                                                       to get a cell name printed on the console:
+AdminControl.getCell()
+#############################################################################################################################################
+#                                                                                       to get the cell printed using print statement:
+CellName = AdminControl.getCell()
+print "Cell name = " + cellName
+#############################################################################################################################################
+#                                                                                       to get a Node name printed on the console:
+AdminControl.getNode()
+#############################################################################################################################################
+#                                                                                       to get the cell printed using print statement:
+CellName = AdminControl.getNode()
+print "Node name = " + nodeName
+#############################################################################################################################################
+#                                                                                       for listing all the installed App on a particular server.
+for node in AdminConfig.list('Node').splitlines():
+nodeName = AdminConfig.showAttribute(node, 'name')
+for srv in AdminConfig.list('Server', node).splitlines():
+if AdminConfig.showAttribute(srv, 'serverType') == 'APPLICATION_SERVER':
+serverName = AdminConfig.showAttribute(srv, 'name')
+prop = AdminConfig.getid('/Node:%s/Server:%s/JavaProcessDef:/JavaVirtualMachine:/Property:java.awt.headless/' % (nodeName, serverName))
+if prop:
+AdminConfig.modify(prop, [ ['value','true'] ])
+else:
+jvm = AdminConfig.getid('/Node:%s/Server:%s/JavaProcessDef:/JavaVirtualMachine:/' % (nodeName, serverName))
+AdminConfig.create('Property', jvm, [ ['name', 'java.awt.headless'], ['value', 'true'] ], 'systemProperties')
+#############################################################################################################################################
+#                                                                                       My Custom Jython Script - file.py
+AdminServerManagement.createApplicationServer("myNode", "Server1", "default")
+AdminServerManagement.createApplicationServer("myNode", "Server2", "default")
+#############################################################################################################################################
+#                                                                                       Use one of them as the first member of a cluster
+AdminClusterManagement.createClusterWithFirstMember("myCluster", "APPLICATION_SERVER", "myNode", "Server1")
+#############################################################################################################################################
+#                                                                                       Add a second member to the cluster
+AdminClusterManagement.createClusterMember("myCluster", "myNode", "Server3")
+#############################################################################################################################################
+#                                                                                       Install an application
+AdminApplication.installAppWithClusterOption("DefaultApplication", "..\installableApps\DefaultApplication.ear", "myCluster") 
+#############################################################################################################################################
+#                                                                                       Start all servers and applications on the node
+AdminServerManagement.startAllServers("myNode")
+#############################################################################################################################################
+#                                                                                       Check if server exists or not?
+Syntax
+AdminServerManagement.checkIfServerExists(nodeName, serverName)
+Example usage
+AdminServerManagement.checkIfServerExists("myNode", "myServer")
+#############################################################################################################################################
+#                                                                                       getJavaHome
+Syntax
+AdminServerManagement.getJavaHome(nodeName, serverName)
+Example usage
+AdminServerManagement.getJavaHome("myNode", "myServer")
+#############################################################################################################################################
+#                                                                                       checkIfServerTemplateExists
+Syntax
+AdminServerManagement.checkIfServerTemplateExists(templateName)
+Example usage
+AdminServerManagement.checkIfServerTemplateExists("newServer")
+#############################################################################################################################################
+#                                                                                       getServerProcessType
+Syntax
+AdminServerManagement.getServerProcessType(nodeName, serverName)
+Example usage
+AdminServerManagement.getServerProcessType("myNode", "server1")
+#############################################################################################################################################
+#                                                                                       getServerPID
+AdminServerManagement.getServerPID(nodeName, serverName)
+Example usage
+AdminServerManagement.getServerPID("ENT-UAT-UHAPP01Node01", "IR-HIX")
+#############################################################################################################################################
+#                                                                                       listJVMProperties
+Syntax
+AdminServerManagement.listJVMProperties(nodeName, serverName, JVMProperty)
+Example usage
+AdminServerManagement.listJVMProperties("ENT-UAT-UHAPP01Node01", "IR-HIX", "")
+#############################################################################################################################################
+#                                                                                       List ServersSyntax
+AdminServerManagement.listServers(serverType, nodeName)
+Example usage
+AdminServerManagement.listServers("APPLICATION_SERVER", "myNode")
+#############################################################################################################################################
+#                                                                                       listServerTemplates
+Syntax
+AdminServerManagement.listServerTemplates(templateVersion, serverType, templateName)
+Example usage
+AdminServerManagement.listServerTemplates("", "APPLICATION_SERVER", "default")
+#############################################################################################################################################
+#                                                                                       listServerTypes
+Syntax
+AdminServerManagement.listServerTypes(nodeName)
+Example usage
+AdminServerManagement.listServerTypes("myNode")
+#############################################################################################################################################
+#                                                                                       queryMBeans
+Syntax
+AdminServerManagement.queryMBeans(nodeName, serverName, mbeanType)
+Example usage
+AdminServerManagement.queryMBeans("myNode", "server1", "Server")
+#############################################################################################################################################
+#                                                                                       showServerInfo
+Syntax
+AdminServerManagement.showServerInfo(nodeName, serverName)
+Example usage
+AdminServerManagement.showServerInfo("myNode", "myServer")
+#############################################################################################################################################
+#                                                                                       viewProductInformation
+Syntax
+AdminServerManagement.viewProductInformation()
+Example usage
+AdminServerManagement.viewProductInformation()
+#############################################################################################################################################
+#                                                                                       createApplicationServer
+Syntax
+AdminServerManagement.createApplicationServer(nodeName, serverName, templateName)
+Example usage
+AdminServerManagement.createApplicationServer("myNode", "myServer", "default")
+#############################################################################################################################################
+#                                                                                       createAppServerTemplate
+Syntax
+AdminServerManagement.createAppServerTemplate(nodeName, serverName, newTemplateName)
+Example usage
+AdminServerManagement.createAppServerTemplate("myNode", "myServer", "myNewTemplate")
+#############################################################################################################################################
+#                                                                                       createGenericServer
+Syntax
+AdminServerManagement.createGenericServer(nodeName, newServerName, templateName, 
+startCmdPath, startCmdArguments, workingDirectory, stopCmdPath, stopCmdArguments)
+Example usage
+[Windows]
+AdminServerManagement.createGenericServer("myNode", "myServer", "default", "", "", "c:\temp", "", "")
+[AIX][Linux][HP-UX][Solaris]
+AdminServerManagement.createGenericServer("myNode", "myServer", "default", "", "", "/temp", "", "")
+#############################################################################################################################################
+#                                                                                       createWebServer
+Syntax
+AdminServerManagement.createWebServer(nodeName, newServerName, port, serverInstallRoot, pluginInstallPath, configFilePath, [Windows]windowsServiceName, errorLogPath,   accessLogPath, webProtocol)
+Example usage
+AdminServerManagement.createWebServer("myNode", "myWebServer", "", "", "", "", "", "", "", "" )
+#############################################################################################################################################
+#                                                                                       deleteServer
+Syntax
+AdminServerManagement.deleteServer(nodeName, serverName)
+Example usage
+AdminServerManagement.deleteServer("myNode", "myServer")
+#############################################################################################################################################
+#                                                                                       deleteServerTemplate
+Syntax
+AdminServerManagement.deleteServerTemplate(templateName)
+Example usage
+AdminServerManagement.deleteServerTemplate("newServerTemplate")
+#############################################################################################################################################
+#                                                                                       startAllServers
+Syntax
+AdminServerManagement.startAllServers(nodeName)
+Example usage
+AdminServerManagement.startAllServers("myNode")
+#############################################################################################################################################
+#                                                                                       startSingleServer
+Syntax
+AdminServerManagement.startSingleServer(nodeName, serverName)
+Example usage
+AdminServerManagement.startSingleServer("myNode", "myServer")
+#############################################################################################################################################
+#                                                                                       stopAllServers
+Syntax
+AdminServerManagement.stopAllServers(nodeName)
+Example usage
+AdminServerManagement.stopAllServers("ENT-UAT-UHAPP01Node01")
+#############################################################################################################################################
+#                                                                                       stopSingleServer
+Syntax
+AdminServerManagement.stopSingleServer(nodeName, serverName, classname, displayname, classpath, otherAttributeList)
+Example usage
+AdminServerManagement.stopSingleServer("myNode", "myServer")
+#############################################################################################################################################
+													Server settings configuration scripts
+#############################################################################################################################################
+#configureAdminService
+configureAdminService
+This script configures settings for the AdminService interface. The AdminService interface is the server-side interface to the application server administration functions.
+
+Table 1. configureAdminService argument descriptions. Run the script with the node name, server name, local connection protocol, and remote connection protocol.
+Argument			Description
+nodeName			Specifies the name of the node of interest.
+serverName			Specifies the name of the server of interest.
+localAdminProtocol	Specifies the type of connector to use to connect the AdminService interface to the application server for local connection.
+remoteAdminProtocol	Specifies the type of connector to use to connect the AdminService interface to the application server for remote connection.
+otherAttributeList	Optionally specifies additional attributes in the following format: [["enabled", "true"], ["pluginConfigService",     "(cells/timmieNode02Cell/nodes/timmieNode01/servers/server1|server.xml#PluginConfigService_1183122130078)"]]
+Syntax:
+AdminServerManagement.configureAdminService(nodeName, serverName, localAdminProtocol, remoteAdminProtocol, otherAttributeList)
+Example usage
+AdminServerManagement.configureAdminService(""myNode"", "myServer", "IPC", "SOAP", [["enabled", "true"], ["pluginConfigService", "(cells/timmieNode02Cell/nodes/timmieNode01/servers/server1|server.xml#PluginConfigService_1183122130078)"]])
+#############################################################################################################################################
+#configureApplicationServerClassloader
+Syntax
+AdminServerManagement.configureApplicationServerClassloader(nodeName, serverName,
+ policy, mode, libraryName)
+Example usage
+AdminServerManagement.configureApplicationServerClassloader("myNode", "myServer", "MULTIPLE", "PARENT_FIRST", 
+"myLibraryReference")
+#############################################################################################################################################
+#configureDynamicCache
+
+This script configures the dynamic cache service in your server configuration. The dynamic cache service works within an application server JVM, intercepting calls to cacheable objects. For example, the dynamic cache service intercepts calls through a servlet service method or a command execute method, and either stores the output of the object to the cache or serves the content of the object from the dynamic cache.
+
+Table 3. configureDynamicCache argument descriptions. Run the script with the node name, server name, default priority, cache size, external cache group name, and external cache group type arguments.
+
+Argument					Description
+nodeName					Specifies the name of the node of interest.
+serverName					Specifies the name of the server of interest.
+defaultPriority				Specifies the default priority for cache entries, determining how long an entry stays in a full cache. Specify an integer between 1 and 255.
+cacheSize					Specifies a positive integer as the value for the maximum number of entries that the cache holds. Enter a cache size value in this field that is between the range of 100 through 200000.
+externalCacheGroupName		The external cache group name needs to match the ExternalCache property as defined in the servlet or JavaServer Pages (JSP) file cachespec.xml file. When external caching is enabled, the cache matches pages with its Universal Resource Identifiers (URI) and pushes matching pages to the external cache. The entries can then be served from the external cache, instead of from the application server.
+externalCacheGroupType	Specifies the external cache group type.
+otherAttributeList			Optionally specifies additional configuration options for the dynamic cache service in the following format: [["cacheProvider", "myProvider"], ["diskCacheCleanupFrequency", 2], ["flushToDiskOnStop", "true"]]
+
+Syntax
+AdminServerManagement.configureDynamicCache(nodeName, serverName, defaultPriority, cacheSize, externalCacheGroupName, externalCacheGroupType, otherAttributeList)
+
+Example usage
+AdminServerManagement.configureDynamicCache("myNode", "myServer", 2, 5000, "EsiInvalidator", "SHARED", [["cacheProvider", "myProvider"], ["diskCacheCleanupFrequency", 2], ["flushToDiskOnStop","true"]])
+#############################################################################################################################################
+# My Custom Jython Script - file.py
+#
+AdminServerManagement.createApplicationServer("myNode", "Server1", "default")
+AdminServerManagement.createApplicationServer("myNode", "Server2", "default")
+
+# Use one of them as the first member of a cluster
+AdminClusterManagement.createClusterWithFirstMember("myCluster", "APPLICATION_SERVER",
+    "myNode", "Server1")
+
+# Add a second member to the cluster
+AdminClusterManagement.createClusterMember("myCluster", "myNode", "Server3")
+
+# Install an application
+AdminApplication.installAppWithClusterOption("DefaultApplication",
+    "..\installableApps\DefaultApplication.ear", "myCluster") 
+
+# Start all servers and applications on the node
+AdminServerManagement.startAllServers("myNode")
+#############################################################################################################################################
+#Display the nodes in your environment
+bin>wsadmin -lang jython -c "AdminNodeManagement.listNodes()"
+wsadmin>AdminNodeManagement.listNodes()
+#############################################################################################################################################
+# To start a Application on a cluster:
+wsadmin>AdminApplication.startApplicationOnCluster("myApplication","myCluster","true")
+#############################################################################################################################################
+
+
+
+
+
+#############################################################################################################################################
+
+wsadmin -c "$AdminApp install /opt/Repository_App/I3/HIXMainITR3.ear {-appname HIXMainITR3}"
+
+create a file called my.jacl (or a jython file if you prefer) with these commands:
+"$AdminApp install c:\\myApps\\App1.ear {-appname myapp}"
+"$AdminApp install c:\\myApps\\App1.ear {-appname yourapp)"
+and invoke it with the simple command:
+wsadmin –f my.jacl
+
+Stop/start application though cmd: 
+
+Identify the application manager MBean for the server where the application resides, and assign it to the appManager variable 
+
+appManager = AdminControl.queryNames('cell=ENT-DV-UHAPP01Cell01,node=ENT-DV-UHAPP01Node01,type=ApplicationManager,process=server1,*')
+
+to print app Manager on console after executing above cmd, execute below cmd:
+print appManager
+
+Output(DEV1)
+WebSphere:name=ApplicationManager,process=server1,platform=proxy,node=ENT-DV-UHAPP01Node01,version=8.5.0.1,type=ApplicationManager,mbeanIdentifier=ApplicationManager,cell=ENT-DV-UHAPP01Cell01,spec=1.0
+
+START appl:
+AdminControl.invoke(appManager, 'startApplication', 'HIXMainITR3_DEV1')
+
+Stop App:
+AdminControl.invoke(appManager, 'stopApplication', 'HIXMainITR3_DEV1')
+
+To know what application on that aprticular profile:
+AdminApp.list()
+or
+create a file like below:
+File name : Applist.py
+file body:
+apps = AdminApp.list()
+print "Application installed on Appsrv01:/n" + apps
+
+now run cmd like below:
+<AppSrv01_bin>./wsadmin.sh -lang jython -f Applist.py
+
+
+Installing Application on a server:
+SYNTAX: AdminApp.install('location_of_ear.ear','[-node nodeName -cell cellName -server serverName]')  - jython
+        AdminConfig.save()
+		AdminApp.isAppReady('application1') --- to know the status os application installation. if the output is true youc an start the application.
+		AdminControl.invoke(appManager, 'startApplication', 'HIXMainITR3_DEV1') - start the app.
+SYNTAX: $AdminApp install "location_of_ear.ear" {-node nodeName -cell cellName -server serverName} - jacl
+ex: 
+AdminApp.install('c:/MyStuff/application1.ear', '[-cluster cluster1]')
+AdminApp.install('location_of_ear.ear','[-node nodeName -cell cellName -server serverName]')
+
+Unstalling Application on a server:
+SYNTAX:
+Ex:
+
+
+
+
+uninstallin app:
+
+AdminApp.uninstall('HIXMainITR3_IR')
+AdminConfig.save()
+AdminNodeManagement.syncActiveNodes()
+
+
+Insatllin app on dev1:
+
+installappdev1.py
+
+AdminApp.uninstall('HIXMainITR3_DEV1')
+AdminConfig.save()
+AdminNodeManagement.syncActiveNodes()
+DEV3 - AdminApp.install('/opt/IBM/WebSphere/AppServer/profiles/Dmgr01/config/temp/upload/1445420998063/HIXMainITR3_DEV3.ear', '[ -nopreCompileJSPs -distributeApp -nouseMetaDataFromBinary -nodeployejb -appname HIXMainITR3_DEV1 -createMBeansForResources -noreloadEnabled -nodeployws -validateinstall warn -noprocessEmbeddedConfig -filepermission .*\.dll=755#.*\.so=755#.*\.a=755#.*\.sl=755 -noallowDispatchRemoteInclude -noallowServiceRemoteInclude -asyncRequestDispatchType DISABLED -nouseAutoLink -noenableClientModule -clientMode isolated -novalidateSchema -MapModulesToServers [[ HIXWeb HIXWeb.war,WEB-INF/web.xml WebSphere:cell=ENT-DV-UHAPP01Cell01,node=ENT-DV-UHAPP01Node01,server=server1 ]] -MapWebModToVH [[ HIXWeb HIXWeb.war,WEB-INF/web.xml default_host ]] -MetadataCompleteForModules [[ HIXWeb HIXWeb.war,WEB-INF/web.xml true ]]]' )
+
+
+DEV4 - AdminApp.install('/opt/IBM/WebSphere/AppServer/profiles/Dmgr01/config/temp/upload/1445944560179/HIXMainITR3_DEV3.ear', '[ -nopreCompileJSPs -distributeApp -nouseMetaDataFromBinary -nodeployejb -appname HIXMainITR3_DEV4 -createMBeansForResources -noreloadEnabled -nodeployws -validateinstall warn -noprocessEmbeddedConfig -filepermission .*\.dll=755#.*\.so=755#.*\.a=755#.*\.sl=755 -noallowDispatchRemoteInclude -noallowServiceRemoteInclude -asyncRequestDispatchType DISABLED -nouseAutoLink -noenableClientModule -clientMode isolated -novalidateSchema -MapModulesToServers [[ HIXWeb HIXWeb.war,WEB-INF/web.xml WebSphere:cell=ENT-DV-UHAPP01Cell01,node=ENT-DV-UHAPP01Node01,server=server4 ]] -MapWebModToVH [[ HIXWeb HIXWeb.war,WEB-INF/web.xml default_host ]] -MetadataCompleteForModules [[ HIXWeb HIXWeb.war,WEB-INF/web.xml true ]]]' )
+AdminConfig.save()
+AdminApp.isAppReady('HIXMainITR3_DEV1')
+AdminControl.invoke(appManager, 'startApplication', 'HIXMainITR3_DEV1')
+
+
+
+AdminApp.install('/opt/IBM/WebSphere/AppServer/profiles/Dmgr01/config/temp/upload/1445420998063/HIXMainITR3_DEV3.ear', '[ -nopreCompileJSPs -distributeApp -nouseMetaDataFromBinary -nodeployejb -appname HIXMainITR3_DEV1 -createMBeansForResources -noreloadEnabled -nodeployws -validateinstall warn -noprocessEmbeddedConfig -filepermission .*\.dll=755#.*\.so=755#.*\.a=755#.*\.sl=755 -noallowDispatchRemoteInclude -noallowServiceRemoteInclude -asyncRequestDispatchType DISABLED -nouseAutoLink -noenableClientModule -clientMode isolated -novalidateSchema -MapModulesToServers [[ HIXWeb HIXWeb.war,WEB-INF/web.xml WebSphere:cell=ENT-DV-UHAPP01Cell01,node=ENT-DV-UHAPP01Node01,server=server1 ]] -MapWebModToVH [[ HIXWeb HIXWeb.war,WEB-INF/web.xml default_host ]] -MetadataCompleteForModules [[ HIXWeb HIXWeb.war,WEB-INF/web.xml true ]]]' )
+
+
+
+AdminControl.invoke('WebSphere:name=DeploymentManager,process=dmgr,platform=common,node=ENT-DV-UHAPP01CellManager01,diagnosticProvider=true,version=8.5.0.1,type=DeploymentManager,mbeanIdentifier=DeploymentManager,cell=ENT-DV-UHAPP01Cell01,spec=1.0', 'multiSync', '[false]', '[java.lang.Boolean]')
+
+
+Perf01 - AdminApp.install('/opt/IBM/WebSphere/AppServer/profiles/Dmgr01/config/temp/upload/1446536971836/HIXMainITR3.ear', '[ -nopreCompileJSPs -distributeApp -nouseMetaDataFromBinary -nodeployejb -appname HIXMainITR3_PERF1 -createMBeansForResources -noreloadEnabled -nodeployws -validateinstall warn -noprocessEmbeddedConfig -filepermission .*\.dll=755#.*\.so=755#.*\.a=755#.*\.sl=755 -noallowDispatchRemoteInclude -noallowServiceRemoteInclude -asyncRequestDispatchType DISABLED -nouseAutoLink -noenableClientModule -clientMode isolated -novalidateSchema -MapModulesToServers [[ HIXWeb HIXWeb.war,WEB-INF/web.xml WebSphere:cell=ENT-UAT-UHAPP04Cell01,cluster=Cluster01 ]] -MapWebModToVH [[ HIXWeb HIXWeb.war,WEB-INF/web.xml default_host ]] -MetadataCompleteForModules [[ HIXWeb HIXWeb.war,WEB-INF/web.xml true ]]]' )
+
+
+to cretae a profile on a  different cell name:
+./manageprofiles.sh -create -profileName AppSrv02 -profilePath /opt/IBM/WebSphere/AppServer/profiles/AppSrv02 -templatePath /opt/IBM/WebSphere/AppServer/profileTemplates/default -cellName ENT-IR-UHAPPR2Cell01 -hostName ENT-IR-UHAPPR2
+
+to cretae a profile on a  different node name:
+ex: MNO DEV
+./manageprofiles.sh -create -profileName AppSrv02 -profilePath /opt/IBM/WebSphere/AppServer/profiles/AppSrv02 -templatePath /opt/IBM/WebSphere/AppServer/profileTemplates/default -cellName ENT-IR-UHAPPR1Cell01 -hostName ENT-IR-UHAPPR2 -nodeName ENT-IR-UHAPPR1Node02 > prf.log
+
+to delete a profile completely from a WAS:
+
+1,
+Give the below command from  
+./manageprofiles.sh -delete -profileName profile_name
+
+Ex : ./manageprofiles.sh -delete -profileName AppSrv02
+2,
+./manageprofiles.sh -validateAndUpdateRegistry
+
+./stopServer.sh server1 -usernamw wasadmin -password wasadmin; ./startServer.sh server1
+
+
+to run a wsadmin cmd out side wsadmin console or prompt:
+wsadmin.sh -lang jython -c 'AdminApp.list()'
+
+to list the servers on a particular node:
+./wsadmin.sh -c "AdminServerManagement.listServers('APPLICATION_SERVER', 'myNode01' )"
+ex: ./wsadmin.sh -c "AdminServerManagement.listServers('APPLICATION_SERVER', 'ENT-DV-UHAPP05Node01')"
+
+If  you want to list the configuration IDs for all of the servers, of every type, in your cell, you can use a call something like:
+./wsadmin.sh -c "AdminServerManagement.listServers( '', '' )"
+
+to get JVM info give the below cmd at wsadmin prompt:
+AdminTask.showJVMProperties('[-nodeName ENT-DV-UHAPP05Node01 -serverName HIX-MODEV]')
+output:
+wsadmin>AdminTask.showJVMProperties('[-nodeName ENT-DV-UHAPP05Node01 -serverName HIX-MODEV]')
+'[[classpath /opt/IBM/HSRI/HIX-MODEV/properties] [bootClasspath ] [verboseModeClass false] [verboseModeGarbageCollection false] [verboseModeJNI false] [initialHeapSize 1024] [maximumHeapSize 4096] [runHProf false] [hprofArguments ] [debugMode false] [debugArgs -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=7777] [genericJvmArguments ] [executableJarFileName ] [disableJIT false] [osName ] [internalClassAccessMode ALLOW] ]'
+
+From 
+./wsadmin.sh -lang jython -c AdminTask.showJVMProperties('[-nodeName ENT-IR-UHAPPR2Node01 -serverName server1]')
+
+
+

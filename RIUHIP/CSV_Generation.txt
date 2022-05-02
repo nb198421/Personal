@@ -1,0 +1,174 @@
+CSV Generation through MCI Schema
+
+1. Login to MCI schema and use below queries to delete duplicates:
+i) 
+Select * FROM CCI_INDV_PRGM_ST
+WHERE ROWID IN (
+SELECT RID
+FROM (
+SELECT 
+ROWID RID, 
+ROW_NUMBER() OVER (PARTITION BY 
+HISTORY_SEQ
+ORDER BY ROWID) RN
+FROM CCI_INDV_PRGM_ST)
+WHERE RN <> 1);
+
+If there is any records coming up and use below delete query to remove records.
+delete FROM CCI_INDV_PRGM_ST
+WHERE ROWID IN (
+SELECT RID
+FROM (
+SELECT 
+ROWID RID, 
+ROW_NUMBER() OVER (PARTITION BY 
+HISTORY_SEQ
+ORDER BY ROWID) RN
+FROM CCI_INDV_PRGM_ST)
+WHERE RN <> 1);
+commit;
+
+
+ii)
+Select * FROM CCI_INDV
+WHERE ROWID IN (
+SELECT RID
+FROM (
+SELECT 
+ROWID RID, 
+ROW_NUMBER() OVER (PARTITION BY 
+HISTORY_SEQ
+ORDER BY ROWID) RN
+FROM CCI_INDV)
+WHERE RN <> 1);
+
+If there is any records coming up and use below delete query to remove records.
+delete FROM CCI_INDV
+WHERE ROWID IN (
+SELECT RID
+FROM (
+SELECT 
+ROWID RID, 
+ROW_NUMBER() OVER (PARTITION BY 
+HISTORY_SEQ
+ORDER BY ROWID) RN
+FROM CCI_INDV)
+WHERE RN <> 1);
+commit;
+
+iii)
+Select * FROM CCI_INDV_ALIAS
+WHERE ROWID IN (
+SELECT RID
+FROM (
+SELECT 
+ROWID RID, 
+ROW_NUMBER() OVER (PARTITION BY 
+HISTORY_SEQ
+ORDER BY ROWID) RN
+FROM CCI_INDV_ALIAS)
+WHERE RN <> 1);
+
+
+If there is any records coming up and use below delete query to remove records.
+delete FROM CCI_INDV_ALIAS
+WHERE ROWID IN (
+SELECT RID
+FROM (
+SELECT 
+ROWID RID, 
+ROW_NUMBER() OVER (PARTITION BY 
+HISTORY_SEQ
+ORDER BY ROWID) RN
+FROM CCI_INDV_ALIAS)
+WHERE RN <> 1);
+commit;
+
+
+iv)
+Select * FROM CCI_INDV_LINK
+WHERE ROWID IN (
+SELECT RID
+FROM (
+SELECT 
+ROWID RID, 
+ROW_NUMBER() OVER (PARTITION BY 
+MCI_ID,
+SYSTEM_CD
+ORDER BY ROWID) RN
+FROM CCI_INDV_LINK)
+WHERE RN <> 1);
+
+
+If there is any records coming up and use below delete query to remove records.
+delete FROM CCI_INDV_LINK
+WHERE ROWID IN (
+SELECT RID
+FROM (
+SELECT 
+ROWID RID, 
+ROW_NUMBER() OVER (PARTITION BY 
+MCI_ID,
+SYSTEM_CD
+ORDER BY ROWID) RN
+FROM CCI_INDV_LINK)
+WHERE RN <> 1);
+commit;
+
+v)
+Select * FROM CCI_INDV_LINK
+WHERE ROWID IN (
+SELECT RID
+FROM (
+SELECT 
+ROWID RID, 
+ROW_NUMBER() OVER (PARTITION BY 
+MCI_ID,
+SYSTEM_ID
+ORDER BY ROWID) RN
+FROM CCI_INDV_LINK)
+WHERE RN <> 1);
+
+If there is any records coming up and use below delete query to remove records.
+delete FROM CCI_INDV_LINK
+WHERE ROWID IN (
+SELECT RID
+FROM (
+SELECT 
+ROWID RID, 
+ROW_NUMBER() OVER (PARTITION BY 
+MCI_ID,
+SYSTEM_ID
+ORDER BY ROWID) RN
+FROM CCI_INDV_LINK)
+WHERE RN <> 1);
+commit;
+
+2. Login to specific Pentaho server with proper credentials:
+3. Go to below location /home/penri/CCI-files and make some folder like <Month><Date> and copy all CSV files to that folder
+4. 	Verify MCI Database Credentials in kettle.properties located at
+        /home/penri/.kettle
+		
+		kettle.properties should have correct MCI Schema Name and passwords, DB Name 
+		
+5.Run the ETL job using commands given below.
+                 # cd /opt/data-integration 
+		sh kitchen.sh -file:/home/penri/netrics-kjb/j_sit_csv_table_extract.kjb -log:/home/penri/extract.log
+		
+		
+6. It should exit without any error.
+7. You can find new CSV Files at:
+/home/penri/CCI-files .
+Load those files
+		
+#######################################################################################
+Only for SIT4:
+
+Move the generated CSV files to Tibco server to /home/tibcouser/tibco-HIX-SIT4/tps/5.0/bin/ and execute below command.
+
+/home/tibcouser/tibco-HIX-SIT4/tps/5.0/bin/TIB_tps_server -p 5001 -t 4 -l enginelogs -r incomingqueries -m 4043776 10.64.65.42 10.64.65.58
+
+
+
+
+

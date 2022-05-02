@@ -1,0 +1,2 @@
+AdminTask.setJVMProperties('[-nodeName ENT-DV-UHAPP01Node01 -serverName server1 -bootClasspath [/opt/HIXEAR/TimeTravel.jar ] -verboseModeClass true -verboseModeGarbageCollection false -verboseModeJNI false -initialHeapSize 1024 -maximumHeapSize 3072 -runHProf false -hprofArguments -debugMode true -debugArgs "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=7778" -executableJarFileName -genericJvmArguments -disableJIT false]')
+AdminConfig.save()

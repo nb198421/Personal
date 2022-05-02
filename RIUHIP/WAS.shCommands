@@ -1,0 +1,151 @@
+WAS.shCommands
+#############################################################################################################################################
+Stopping & Starting Deployment Manager, Node Agent & JVM
+
+stopManager.sh
+You can stop the Deployment Manager using above command.
+
+startManager.sh
+You can start the Deployment Manager using above command.
+
+startServer.sh
+To start the JVM, you can use startServer.sh with server name like below.
+Note: Node Agent must be started prior to starting JVM.
+
+stopServer.sh
+You can shutdown JVM by executing above command along with JVM name.
+
+stopNode.sh
+To stop the respective Node Agent you have to go to that profile and execute stopNode.sh to stop the Node Agent.
+
+startNode.sh
+Go to respective profile and execute startNode.sh to start the Node Agent.
+
+serverStatus.sh
+To find out JVM’s status you can use this script with –all argument. This must be executed in respective profile level. If you execute this in DMGR profile level it will just show   the status of DMGR.
+example: ./serverStatus.sh -all
+#############################################################################################################################################
+Backup & Restore
+
+backupConfig.sh
+
+One of the first things to learn while working in production support is to how to take a backup. When nothing works – backup helps. You can use this script to take a backup of your WebSphere environment configuration. As a best practice, you can use “–nostop” argument so it takes a backup without stopping Deployment Manager.
+
+[root@localhost bin]# ./backupConfig.sh -nostop
+ADMU0116I: Tool information is being logged in file
+           /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/backupConfig.log
+ADMU0128I: Starting tool with the AppSrv01 profile
+ADMU5001I: Backing up config directory
+          /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/config to file
+           /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/WebSphereConfig_2015-04-12.zip
+....................................................................................................................................................................................................................................................................
+ADMU5002I: 933 files successfully backed up
+#############################################################################################################################################
+restoreConfig.sh
+
+If you have changed configuration and things are not as expected and there is a time to restore your configuration. Well, you can use backup file to restore the configuration.
+
+[root@localhost bin]# ./restoreConfig.sh WebSphereConfig_2015-04-12.zip -nostop
+ADMU0116I: Tool information is being logged in file
+           /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/restoreConfig.log
+ADMU0128I: Starting tool with the AppSrv01 profile
+ADMU5502I: The directory /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/config
+           already exists; renaming to
+           /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/config.old
+ADMU5504I: Restore location successfully renamed
+ADMU5505I: Restoring file WebSphereConfig_2015-04-12.zip to location
+           /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/config
+.........................................................................................................................................................................
+ADMU5506I: 933 files successfully restored
+ADMU6001I: Begin App Preparation -
+ADMU6009I: Processing complete.
+ADMU6002I: Begin Asset Preparation -
+ADMU6009I: Processing complete.
+#############################################################################################################################################
+Getting version & fix pack information
+
+versionInfo.sh
+
+To find out WAS version, build level, package, architecture & installed features installed on your server.
+
+[root@localhost bin]# ./versionInfo.sh
+WVER0010I: Copyright (c) IBM Corporation 2002, 2012; All rights reserved.
+WVER0012I: VersionInfo reporter version 1.15.1.48, dated 2/8/12 
+--------------------------------------------------------------------------------
+IBM WebSphere Product Installation Status Report
+-------------------------------------------------------------------------------- 
+Report at date and time April 12, 2015 3:18:41 AM PDT 
+Installation
+--------------------------------------------------------------------------------
+Product Directory       /opt/IBM/WebSphere/AppServer
+Version Directory       /opt/IBM/WebSphere/AppServer/properties/version
+DTD Directory           /opt/IBM/WebSphere/AppServer/properties/version/dtd
+Log Directory           /var/ibm/InstallationManager/logs 
+Product List
+--------------------------------------------------------------------------------
+NDTRIAL                 installed
+Installed Product
+--------------------------------------------------------------------------------
+Name                 IBM WebSphere Application Server Network Deployment
+Version               8.5.5.0
+ID                   NDTRIAL
+Build Level           gm1319.01
+Build Date           5/14/13
+Package               com.ibm.websphere.NDTRIAL.v85_8.5.5000.20130514_1044
+Architecture         x86-64 (64 bit)
+Installed Features   IBM 64-bit WebSphere SDK for Java
+                     WebSphere Application Server Full Profile
+                     EJBDeploy tool for pre-EJB 3.0 modules
+                     Embeddable EJB container
+                     Stand-alone thin clients and resource adapters 
+--------------------------------------------------------------------------------
+End Installation Status Report
+--------------------------------------------------------------------------------
+Note: you may be interested in following supported arguments.
+
+-fixpacks: To display fixpacks information
+-long: To display all fixpacks and ifixes
+-ifixes: To display ifixes information
+#############################################################################################################################################
+getHistoryReport.sh
+If you are performing auditing or just want to list out components, fixes, refresh pack with dates, you can run this command, which will generate historyReport.html in current working directory, which is usually bin folder.
+
+getVersionReport.sh
+To display build version and build date about WebSphere installation. Often asked by IBM support guys to investigate if any suspected issue with particular version.
+#############################################################################################################################################
+Clearing the Cache
+There might be various reasons to clear the cache the most obvious one would be after an upgrade. There are two caches that you should considering clearing 1) JVM 2) OSGi.
+
+clearClassCache.sh
+To clear JVM’s class cache, you can execute above script.
+Note: JVM’s must be stopped prior to clearing class caches.
+
+osgiCfgInit.sh
+Execute above command to clear OSGi profile & server cache.
+
+[root@localhost bin]# ./osgiCfgInit.sh
+OSGi profile cache successfully cleaned for /opt/IBM/WebSphere/AppServer/profiles/Dmgr01.
+OSGi server cache successfully cleaned for /opt/IBM/WebSphere/AppServer/profiles/Dmgr01/servers/dmgr.
+[root@localhost bin]#
+Note: don’t forget to stop the running processes prior to clearing caches.
+#############################################################################################################################################
+Managing Profiles
+
+managesdk.sh
+
+You can toggle the version if you have installed multiple SDK. You can also use this script to find out available associated SDK to your profile. Below example shows list of available SDK.
+
+[root@localhost bin]# ./managesdk.sh -listAvailable
+CWSDK1003I: Available SDKs :
+CWSDK1005I: SDK name: 1.6_64
+CWSDK1001I: Successfully performed the requested managesdk task.
+[root@localhost bin]#
+pmt.sh
+
+PMT (Profile Management Tool) can be used to create WebSphere profiles in GUI mode. Creating profiles using PMT is very easy – all you got to do is create the desired level of profile and follow the wizard. You got to try it!
+
+syncNode.sh
+For some reason if you can’t perform Node Sync through Administration Console, you can use syncNode.sh from profile level. Node Agent must be stopped prior to use this script. You have to pass argument for DMGR host & SOAP port number.
+Ex: ./syncNode.sh localhost 8879
+localhost = Deployment Manager hostname
+8879 = DMGR SOAP Port number
