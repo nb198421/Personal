@@ -1,0 +1,192 @@
+LINUX
+##############################################################################################################################################################################
+How to killa PID on windows using cmd - Taskkill /PID 2836 /F
+##############################################################################################################################################################################
+to check all the proccess consumed memory:
+mem()
+{
+ps -eo rss,pid,euser,args:100 --sort %mem | grep -v grep | grep -i $@ | awk '{printf $1/1024/1024 "GB"; $1=""; print }'
+}
+##############################################################################################################################################################################
+sshpass -p muleuser@123 scp /home/pthadur/MCI.zip muleuser@10.64.33.31:/opt/mule-standalone-3.4.0/apps/
+##############################################################################################################################################################################
+to clear cache memory - sudo sh -c "sync; echo 3 > /proc/sys/vm/drop_caches"
+##############################################################################################################################################################################
+To search a word in a particular file:
+grep -R --include="*CCI_INDV_ALIAS*" "Eggs" *
+Result 1:
+CCI_INDV_ALIAS.csv:1169,1169,319311,111604982,01/10/1995,Scramble,Eggs,J,,M,N
+Result 2:
+[tibcouser@ENT-TST-UHESB08 bin]$ grep -R --include="*CCI_INDV_ALIAS*" 1169,1169 *
+CCI_INDV_ALIAS.csv:1169,1169,75056,,01/01/1900,CABAAEDEEDCFFD,DFFDAAADAAAFBFC,D,,,N
+CCI_INDV_ALIAS.csv:1169,1169,319311,111604982,01/10/1995,Scramble,Eggs,J,,M,N
+July28/CCI_INDV_ALIAS.csv:1169,1169,75056,,,CABAAEDEEDCFFD,DFFDAAADAAAFBFC,D,,,N
+##############################################################################################################################################################################
+
+discard changes and quit : :q!
+save changes : :wq
+to edit: press insert or i
+##############################################################################################################################################################################
+
+ cd /opt/tibco/tps/5.0/bin
+ ls
+ head -1 CCI_INDV.csv
+ rm -rf CCI_INDV.csv
+ vi CCI_INDV.csv
+ vi CCI_INDV.csv
+ more dbps.txt
+ more dbtypes.txt
+ head -1 CCI_INDV_ALIAS.csv
+ rm -rf CCI_INDV_ALIAS.csv
+ vi CCI_INDV_ALIAS.csv
+ vi CCI_INDV_ALIAS.csv
+ more CCI_INDV_ALIAS.csv
+ more dbtypesalias.txt
+ head -1 CCI_INDV_LINK.csv
+ rm -rf CCI_INDV_LINK.csv
+ vi CCI_INDV_LINK.csv
+ more CCI_INDV_LINK.csv
+ more dblink.txt
+ head -1 CCI_INDV_PRGM_ST.csv
+ vi CCI_INDV_PRGM_ST.csv
+ rm -rf CCI_INDV_PRGM_ST.csv
+ vi CCI_INDV_PRGM_ST.csv
+ more CCI_INDV_PRGM_ST.csv
+ more dbtypesalias.txt
+ more dbps.txt
+  ##############################################################################################################################################################################
+
+
+The special ipcs command allows you to view the current shared memory pages on the system. Here's the output from a sample ipcs command: 
+ipcs -m
+
+to replace a particular sting in a particular laocation - grep -rl '10.64.33.56' ./ | xargs sed -i 's/10.64.33.56/10.64.65.79/g'
+
+to replace a particular sting in a particular file using vi editor - %s/10.64.33.56/10.64.65.79/g (Ref: http://www.thegeekstuff.com/2009/04/vi-vim-editor-search-and-replace-examples/)
+
+
+scp penri@10.64.65.18:/home/penri/IES/CCI-files/*.csv . - push
+
+ cat Cluster*/HIX-App/RIHIX.log | grep RERF_LOGGER | grep IntegrationServiceAction:callOPAService  | grep '2016-04-18 11:
+ 
+  du -ch | grep total
+  
+  cat RIHIX.log | grep 'Transaction rolled back because it has been marked as rollback-only'
+  
+mount -t nfs server:/directory/with/data on /mnt type nfs (rw,addr=192.168.254.196)
+or
+mount -t nfs 10.64.33.81:/opt /Mounted_Drive
+ex:
+mount -t nfs 10.64.33.81:/opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/IES-MODEV on /home/logger/MO/MODEV/ServerLogs/IES/
+
+
+How to check no of CPU's in a Linux box:
+cat /proc/cpuinfo | grep processor | wc -l
+cat /proc/cpuinfo
+
+Pass the -T to find out file system type:
+df -T -h
+
+to un zip a .tgz file to a particular location- tar -xvf apps_05172016.tgz -C /home/muleuser/MOSIT/
+
+to create a ssh key:
+ssh-keygen -t dsa
+ssh-keygen -t rsa
+
+Lets say you want to copy between two hosts host_src and host_dest. host_src is the host where you would run the scp, ssh or rsyn command, irrespective of the direction of the file copy!
+
+On host_src, run this command as the user that runs scp/ssh/rsync
+
+$ ssh-keygen -t rsa
+
+This will prompt for a passphrase. Just press the enter key. It'll then generate an identification (private key) and a public key. Do not ever share the private key with anyone! ssh-keygen shows where it saved the public key. This is by default ~/.ssh/id_rsa.pub:
+
+Your public key has been saved in <your_home_dir>/.ssh/id_rsa.pub
+
+Transfer the id_rsa.pub file to host_dest by either ftp, scp, rsync or any other method.
+
+On host_dest, login as the remote user which you plan to use when you run scp, ssh or rsync on host_src.
+Copy the contents of id_rsa.pub to ~/.ssh/authorized_keys
+##############################################################################################################################################################################
+$ cat id_rsa.pub >>~/.ssh/authorized_keys
+$ chmod 700 ~/.ssh/authorized_keys
+##############################################################################################################################################################################
+To know a particular is listening or not: tested in windows - it worked
+netstat -aon |find /i "listening" |find "8880"
+##############################################################################################################################################################################
+To know all the prots that are listening: tested in windows - it worked
+netstat -abno
+##############################################################################################################################################################################
+to set a crontab:
+to run the job every 2 hours - 0 */2 * * *
+##############################################################################################################################################################################
+clearcache.sh
+#!/bin/sh
+cd /home/wasadmin/crontab/
+sudo su -
+sh -c "sync; echo 3 > /proc/sys/vm/drop_caches"
+su wasadmin
+##############################################################################################################################################################################
+crontab.txt
+0 */2 * * * /home/wasadmin/crontab/clearcache.sh
+
+now - give the belwo command:
+crontab crontab.txt
+
+to check whether your job is scheduled or not. Run below command.
+crontab - l
+To remove the crontab. give the below command:
+crontab -r
+##############################################################################################################################################################################
+to send a mail - tail -22 clearcache-sitreg.log | mail -s "SIT-REG clearcache log" npanguluri@deloitte.com,vijakumar@deloitte.com - worked
+##############################################################################################################################################################################
+To empty all the files in a particular folder:
+find /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/ffdc/ -type f -exec sh -c '>{}' \;
+find . -type f -exec sh -c '>{}' \;
+##############################################################################################################################################################################
+##############################################################################################################################################################################
+MAIL RELATED COMMANDSD
+##############################################################################################################################################################################
+cat /home/wasadmin/cleanup.sh | mailx npanguluri@deloitte.com
+
+echo | mailx -a /home/wasadmin/cleanup.sh  npanguluri@deloitte.com
+
+echo "Please find the attched file for SIT-REG cache cleanup activity" | mutt -s "SIT-REG clearcache log" -a "/home/wasadmin/crontab/clearcache.log" -- npanguluri@deloitte.com
+
+echo "Please find the attched file for SIT-REG cache cleanup activity" | mutt -s "SIT-REG clearcache log" -a "/home/wasadmin//cleanup.sh" -- npanguluri@deloitte.com
+
+echo "Please find the attched file for SIT-REG cache cleanup activity" | mailx -s "SIT-REG clearcache log" -a "/home/wasadmin/cleanup.sh" npanguluri@deloitte.com
+
+cat /home/wasadmin/message.txt | mail -s "Cache clear log - SIT-REG" -a /home/wasadmin/cleanup.sh npanguluri@deloitte.com
+
+/usr/sbin/sendmail -f 10.64.65.12@uhip.ri.gov npanguluri@deloitte.com,vijakumar@deloitte.com
+
+cp /home/wasadmin/crontab/* /opt/
+
+cat samplmail.txt |/usr/sbin/sendmail -f 10.64.65.12@uhip.ri.gov /a "/home/wasadmin/samplmail.txt" vijakumar@deloitte.com 
+
+cat samplmail.txt /a "/home/wasadmin/samplmail.txt" |/usr/sbin/sendmail -f 10.64.65.12@uhip.ri.gov npanguluri@deloitte.com
+
+mail -s "SIT-REG clearcache log" npanguluri@deloitte.com < /home/wasadmin/crontab/clearcache-sitreg.log
+
+tail -13 clearcache-sitreg.log | mail -s "SIT-REG clearcache log" npanguluri@deloitte.com
+
+tail -22 clearcache-sitreg.log | mail -s "SIT-REG clearcache log" npanguluri@deloitte.com,vijakumar@deloitte.com - worked
+##############################################################################################################################################################################
+to copy a file through sftp:
+get FEP* /home/sudeepg/CMS/
+##############################################################################################################################################################################
+Create a User:
+
+
+##############################################################################################################################################################################
+Change password
+
+##############################################################################################################################################################################
+Mount a particular path on a different server
+
+##############################################################################################################################################################################
+umnount a particular path
+
+
+##############################################################################################################################################################################s

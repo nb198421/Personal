@@ -1,0 +1,2 @@
+%SYSTEMROOT%\System32\WindowsPowerShell\v1.0\powershell.exe  -executionpolicy remotesigned -File  C:\Infra_Smoke_Workspaces\SITN_Infra_Smoke_Workspace\Automation_Framework\SupportLibraries\email.ps1 -filePath  "C:\Output_Results_Infra\SITN\ExecutionReport.htm" -attachmentPath  "C:\Output_Results_Infra\SITN\Run_10-24-2017_01-29-06AM.zip" -env SITN -outputFolder Output_Results_Infra
+exit
